@@ -2,6 +2,8 @@
 
 A Claude agent skill that compares a resume with a job posting: match score, missing skills, ATS format checks, evidence-backed edits, and a cover letter on request.
 
+![A fictional resume goes from 75 to 85 with one backed edit, then an invented Kubernetes edit is rejected](docs/demo.gif)
+
 Claude reads the posting. A standard-library Python script does the counting, so the same inputs always give the same score.
 
 - Every requirement needs a verbatim quote from the posting, or the script rejects it.
@@ -40,7 +42,7 @@ Scanning runs on your machine, but Claude reads your resume and the posting, so 
 
 ## Example
 
-Everything in `examples/` is fictional. `sh examples/run.sh` rebuilds [the report](examples/report.md) (75, or 85 with one backed edit) and then tries an invented edit:
+Everything in `examples/` is fictional. The demo above is a condensed rendering of real script output, built by `docs/make_demo.py`. `sh examples/run.sh` rebuilds [the report](examples/report.md) (75, or 85 with one backed edit) and then tries an invented edit:
 
 ```
 fitcheck: edits rejected:
