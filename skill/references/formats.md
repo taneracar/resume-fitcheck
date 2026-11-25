@@ -16,7 +16,7 @@
 }
 ```
 
-`name` or a `match` term must appear in the quote. Omit `years` or `degree` when the posting does not ask, and omit `degree` when equivalent experience is accepted. Levels: associate, bachelor, master, doctorate.
+`priority` is required, preferred or soft (soft is reported, not scored). `name` or a `match` term must appear in the quote. Omit `years` or `degree` when the posting does not ask, and omit `degree` when equivalent experience is accepted. Levels: associate, bachelor, master, doctorate.
 
 ## ~/.fitcheck/profile.json
 

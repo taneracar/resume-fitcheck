@@ -20,6 +20,8 @@ Claude reads the posting. A standard-library Python script does the counting, so
 
 Parts the posting does not mention are dropped and the rest rescaled to 100. This is fitcheck's own formula. It is not a real ATS score and does not predict interviews. Requirements are extracted by Claude, so two separate extractions of one posting can differ.
 
+Also reported, without changing the score: how often each skill appears in the resume and the posting, soft skills, searchability (title, contact, sections, dates, file name), recruiter tips (measurable results, word count, cliches, job level, web presence), and formatting (pages, page size, fonts, images).
+
 ## Install
 
 Needs Python 3.9+ and `pdftotext` (poppler) for PDFs. DOCX, TXT and MD need nothing else.

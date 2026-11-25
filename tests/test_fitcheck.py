@@ -4,6 +4,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parents[1] / 'skill' / 'scripts'))
 import fitcheck as f
+import insights as ins
 
 CV = """Sam Doe
 Full Stack Engineer
@@ -129,6 +130,45 @@ class Edits(unittest.TestCase):
 
     def test_known_number_ok_and_source_entities(self):
         self.check(new='Wrote 117 REST tests', source='<p>Wrote REST services in Node.js.</p>')
+
+
+class Insights(unittest.TestCase):
+    def status(self, checks):
+        return {n: s for n, s, _ in checks}
+
+    def run_on(self, cv, **kw):
+        d = ins.analyse('cv.txt', dict(DOC, text=cv), dict(REQS, **kw), JD)
+        return {k: self.status(d[k]) for k in ('Searchability', 'Recruiter tips', 'Formatting')}, d
+
+    def test_searchability(self):
+        s = self.run_on(CV)[0]['Searchability']
+        self.assertEqual([k for k, v in s.items() if v == 'CHECK'], ['File type', 'Location', 'Summary section'])
+        s = self.run_on('Sam Doe\nCosta Mesa, CA\nSUMMARY\nx\n' + CV.replace('06/2022', 'June 2022'))[0]['Searchability']
+        self.assertEqual((s['Location'], s['Summary section'], s['One date format']), ('PASS', 'PASS', 'CHECK'))
+
+    def test_month_in_prose_is_not_a_format_problem(self):
+        s = self.run_on(CV + ' Launched in October 2026.')[0]['Searchability']
+        self.assertEqual(s['One date format'], 'PASS')
+
+    def test_results_ignore_dates_and_versions(self):
+        n = lambda t: len(ins.results_lines({'experience': t}))
+        self.assertEqual(n('Acme 01/2023 - 2025. Used Next.js 16 and PostgreSQL 17.'), 0)
+        self.assertEqual(n('Cut load time by 30%. Built 7 apps.'), 2)
+
+    def test_tips(self):
+        t = self.run_on(CV + '\nResponsible for my team. Team player.')[0]['Recruiter tips']
+        self.assertEqual((t['No cliches'], t['No weak openers'], t['No first person'], t['Web presence'], t['Job level']),
+                         ('CHECK', 'CHECK', 'CHECK', 'CHECK', 'N/A'))
+        self.assertEqual(self.run_on(CV, role='Senior Engineer')[0]['Recruiter tips']['Job level'], 'CHECK')
+
+    def test_soft_is_reported_but_not_scored(self):
+        soft = REQS['skills'] + [{'name': 'ownership', 'priority': 'soft', 'quote': 'x'}]
+        self.assertEqual(f.score(DOC, dict(REQS, skills=soft), PROFILE)['score'], 58)
+        self.assertEqual(self.run_on(CV, skills=soft)[1]['soft'][0]['found'], False)
+
+    def test_counts(self):
+        r = f.score(DOC, REQS, {}, JD)['skills'][0]
+        self.assertEqual((r['resume_count'], r['posting_count']), (2, 1))
 
 
 class Files(unittest.TestCase):

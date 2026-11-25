@@ -23,9 +23,9 @@ Write `reqs.json` (`references/formats.md`). Rules:
 
 - Every quote is verbatim from the posting. Company marketing, benefits and legal text are not requirements.
 - `required` comes from required/must/"what you need" wording, `preferred` from plus/nice-to-have/bonus.
-- One entry per concrete skill, tool, domain or practice. Skip traits nobody can verify ("self-starter").
+- One entry per concrete skill, tool, domain or practice. Interpersonal and working-style traits go in as `soft`: reported, not scored.
 - "Java, Go or Python" is one any-of entry with the alternatives in `match`. "React and TypeScript" is two entries.
-- `match` also takes true synonyms (Postgres for PostgreSQL). Never add a related skill to raise the score (Docker for Kubernetes).
+- `match` also takes true synonyms (Postgres for PostgreSQL). Choose `match` terms from the posting before looking at the resume's wording. Never add a related skill to raise the score (Docker for Kubernetes).
 - Blockers: compare the posting with the profile's `blockers` list, and include citizenship, clearance, relocation, licence and experience limits.
 
 ## 3. Scan
@@ -38,7 +38,7 @@ Omit `--profile` if there is none. If requirements are rejected, fix them agains
 
 Check the "Resume says" column. If a match is a different meaning ("body metrics" for service metrics), replace that term in `reqs.json` with a more precise phrase from the same quote and rerun. Do this for every wrong match, even though it lowers the score.
 
-Report briefly: blockers first, then score, missing required skills, format failures, and the path to `report.md`. If there is a blocker, ask whether to continue before doing any edits or letter.
+Report briefly: blockers first, then score, missing required skills, every CHECK and FAIL line worth acting on, and the path to `report.md`. Counts ("Resume 1x, Posting 5x") show emphasis; never repeat a term just to raise a count. Judge CHECK lines before advising: for example, do not put a job title on the resume as a title the user has not held, only as the target in the tagline. If there is a blocker, ask whether to continue before doing any edits or letter.
 
 ## 4. Missing skills
 

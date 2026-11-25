@@ -192,13 +192,13 @@ def check_reqs(reqs, posting):
         if name.lower() in seen:
             errors.append(f'skill {name}: listed twice')
         seen.add(name.lower())
-        if s.get('priority') not in ('required', 'preferred'):
-            errors.append(f'skill {name}: priority must be required or preferred')
+        if s.get('priority') not in ('required', 'preferred', 'soft'):
+            errors.append(f'skill {name}: priority must be required, preferred or soft')
         quoted(s, f'skill {name}')
         if not any(count(t, str(s.get('quote', ''))) for t in terms(s)):
             errors.append(f'skill {name}: none of its terms appear in its quote')
-    if not reqs.get('skills'):
-        errors.append('no skills listed')
+    if not any(s.get('priority') != 'soft' for s in reqs.get('skills', [])):
+        errors.append('no required or preferred skills listed')
     years, degree = reqs.get('years'), reqs.get('degree')
     if years:
         quoted(years, 'years')
@@ -249,15 +249,19 @@ def degree_rank(text):
     return max([r for _, r, rx in DEGREES if re.search(r'(?<![\w.])(?:' + rx + r')(?!\w)', area, re.I)] or [0])
 
 
-def score(doc, reqs, profile):
+def score(doc, reqs, profile, posting=''):
     text = doc['text']
     secs = sections(text)
     body = '\n'.join(v for k, v in secs.items() if k != 'skills')
     rows = []
     for s in reqs['skills']:
+        if s['priority'] == 'soft':
+            continue
         hits = [t for t in terms(s) if count(t, text)]
         rows.append({
             'name': s['name'], 'priority': s['priority'], 'found': bool(hits), 'matched': hits,
+            'resume_count': sum(count(t, text) for t in set(terms(s))),
+            'posting_count': sum(count(t, posting) for t in set(terms(s))),
             'context': context(hits[0], body) or context(hits[0], text) if hits else '',
             'listed_only': bool(hits) and not any(count(t, body) for t in hits),
             'status': 'found' if hits else profile_status(s, profile), 'quote': s['quote'],
@@ -375,7 +379,7 @@ def cell(s):
     return flat(str(s)).replace('|', '\\|')
 
 
-def report(result, reqs, projected=None, edits=None):
+def report(result, reqs, projected=None, edits=None, extra=None):
     L = [f'# fitcheck: {cell(reqs["role"])}' + (f', {cell(reqs["company"])}' if reqs.get('company') else ''), '']
     for b in reqs.get('blockers', []):
         L.append(f'> **BLOCKER: {cell(b["reason"])}.** "{cell(b["quote"])}"')
@@ -391,11 +395,20 @@ def report(result, reqs, projected=None, edits=None):
     for p in ('required', 'preferred'):
         rows = [r for r in result['skills'] if r['priority'] == p]
         if rows:
-            L += ['', f'## {p.capitalize()} skills', '', '| Skill | Status | Resume says | Posting says |', '|---|---|---|---|']
+            L += ['', f'## {p.capitalize()} skills', '', '| Skill | Status | Resume | Posting | Resume says | Posting says |', '|---|---|---|---|---|---|']
             for r in rows:
                 s = label[r['status']] + (' (skills list only)' if r['listed_only'] else '')
-                L.append(f'| {cell(r["name"])} | {s} | {cell(r["context"])} | {cell(r["quote"])} |')
-    L += ['', '## Format', '']
+                L.append(f'| {cell(r["name"])} | {s} | {r["resume_count"]}x | {r["posting_count"]}x | {cell(r["context"])} | {cell(r["quote"])} |')
+    if extra:
+        if extra['soft']:
+            L += ['', '## Soft skills (not scored)', '', '| Skill | Status | Resume says | Posting says |', '|---|---|---|---|']
+            L += [f'| {cell(s["name"])} | {"found" if s["found"] else "missing"} | {cell(s["context"])} | {cell(s["quote"])} |'
+                  for s in extra['soft']]
+        for title in ('Searchability', 'Recruiter tips', 'Formatting'):
+            todo = sum(c[1] == 'CHECK' for c in extra[title])
+            L += ['', f'## {title} (not scored): ' + (f'{todo} to check' if todo else 'all clear'), '']
+            L += [f'- {st} {n}' + (f': {cell(d)}' if d else '') for n, st, d in extra[title]]
+    L += ['', '## Format (scored)', '']
     L += [f'- {"PASS" if ok else "FAIL"} {n}' + (f': {d}' if d else '') for n, ok, _, d in result['format']]
     if edits:
         L += ['', '## Suggested edits']
@@ -428,22 +441,24 @@ def main(argv=None):
         reqs = load(a.reqs)
         profile = load(a.profile) if a.profile else {}
         check_reqs(reqs, posting)
-        result, projected, edits = score(doc, reqs, profile), None, None
+        result, projected, edits = score(doc, reqs, profile, posting), None, None
         if a.cmd == 'edits':
             source = Path(a.source).read_text(encoding='utf-8') if a.source else None
             is_html = bool(a.source) and Path(a.source).suffix.lower() in ('.html', '.htm')
             if is_html:
                 source = html.unescape(source)
             edits = check_edits(load(a.edits), doc['text'], reqs, profile, source)
-            projected = score(dict(doc, text=apply_edits(doc['text'], edits)), reqs, profile)
-        md = report(result, reqs, projected, edits)
+            projected = score(dict(doc, text=apply_edits(doc['text'], edits)), reqs, profile, posting)
+        import insights  # imports this module, so only once it is loaded
+        extra = insights.analyse(a.resume, doc, reqs, posting)
+        md = report(result, reqs, projected, edits, extra)
         print(md)
         if a.out:
             out = Path(a.out).expanduser()
             out.mkdir(parents=True, exist_ok=True)
             (out / 'report.md').write_text(md, encoding='utf-8')
             (out / 'result.json').write_text(json.dumps(
-                {'result': result, 'projected': projected}, indent=2, ensure_ascii=False), encoding='utf-8')
+                {'result': result, 'projected': projected, 'insights': extra}, indent=2, ensure_ascii=False), encoding='utf-8')
             if edits:
                 def enc(s):
                     return html.escape(s, quote=False) if is_html else s
