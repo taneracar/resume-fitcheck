@@ -1,0 +1,16 @@
+Jordan Example
+Frontend Engineer
+Portland, OR | (555) 010-0142 | jordan@example.com | github.com/jordan-example
+SUMMARY
+Frontend engineer building customer dashboards with React and TypeScript.
+EXPERIENCE
+Northfield Software 01/2023 - Present
+Built 6 dashboard pages in React and TypeScript used by the support team.
+Cut the main page load time from 4.1 s to 1.9 s by splitting bundles.
+Reviewed code for a team of 5 and fixed production bugs after each release.
+Added automated tests in Jest, raising coverage from 40% to 72%.
+Moved 3 legacy forms to shared components and documented how to use them.
+EDUCATION
+Example State University | B.S., Computer Science 06/2022
+SKILLS
+TypeScript, JavaScript, React, Jest, Git

@@ -1,0 +1,15 @@
+{
+  "company": "Example Harbor",
+  "role": "Frontend Engineer",
+  "skills": [
+    {"name": "React", "priority": "required", "quote": "building web apps with React and TypeScript"},
+    {"name": "TypeScript", "priority": "required", "quote": "building web apps with React and TypeScript"},
+    {"name": "PostgreSQL", "match": ["Postgres"], "priority": "required", "quote": "Experience querying PostgreSQL"},
+    {"name": "Automated tests", "match": ["automated testing"], "priority": "required", "quote": "You write automated tests"},
+    {"name": "Code review", "match": ["reviewed code"], "priority": "required", "quote": "give useful code review"},
+    {"name": "Kubernetes", "match": ["k8s"], "priority": "preferred", "quote": "Kubernetes experience"},
+    {"name": "GraphQL", "priority": "preferred", "quote": "GraphQL"},
+    {"name": "Communication", "priority": "soft", "quote": "Clear communication with designers"}
+  ],
+  "years": {"min": 2, "quote": "2+ years of experience"}
+}

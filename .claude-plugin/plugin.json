@@ -1,0 +1,8 @@
+{
+  "name": "fitcheck",
+  "version": "0.1.0",
+  "description": "Evidence-checked resume matching for Claude Code: score a resume against a job posting, find gaps, and reject edits your experience does not back up.",
+  "author": {"name": "taneracar", "url": "https://github.com/taneracar"},
+  "license": "MIT",
+  "keywords": ["resume", "ats", "job-search", "agent-skills"]
+}

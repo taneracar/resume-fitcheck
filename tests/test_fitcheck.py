@@ -2,7 +2,7 @@ import copy, io, json, sys, tempfile, unittest, zipfile
 from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parents[1] / 'skill' / 'scripts'))
+sys.path.insert(0, str(Path(__file__).parents[1] / 'skills' / 'fitcheck' / 'scripts'))
 import fitcheck as f
 import insights as ins
 
@@ -143,7 +143,7 @@ class Insights(unittest.TestCase):
     def test_searchability(self):
         s = self.run_on(CV)[0]['Searchability']
         self.assertEqual([k for k, v in s.items() if v == 'CHECK'], ['File type', 'Location', 'Summary section'])
-        s = self.run_on('Sam Doe\nCosta Mesa, CA\nSUMMARY\nx\n' + CV.replace('06/2022', 'June 2022'))[0]['Searchability']
+        s = self.run_on('Sam Doe\nPortland, OR\nSUMMARY\nx\n' + CV.replace('06/2022', 'June 2022'))[0]['Searchability']
         self.assertEqual((s['Location'], s['Summary section'], s['One date format']), ('PASS', 'PASS', 'CHECK'))
 
     def test_month_in_prose_is_not_a_format_problem(self):

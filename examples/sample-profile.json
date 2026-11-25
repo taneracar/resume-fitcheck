@@ -1,0 +1,6 @@
+{
+  "years_experience": 3,
+  "skills": [{"name": "PostgreSQL", "aliases": ["Postgres"], "evidence": "Northfield: wrote the queries behind the dashboard pages"}],
+  "never_claim": [{"name": "Kubernetes", "aliases": ["k8s"], "note": "Never used"}],
+  "banned_phrases": ["leverage"]
+}

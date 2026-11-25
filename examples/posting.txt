@@ -1,0 +1,11 @@
+Frontend Engineer, Example Harbor (a fictional company)
+
+What you need
+2+ years of experience building web apps with React and TypeScript.
+Experience querying PostgreSQL.
+You write automated tests and give useful code review.
+Clear communication with designers.
+
+Nice to have
+Kubernetes experience.
+GraphQL.

@@ -1,0 +1,3 @@
+{"edits": [{"old": "Built 6 dashboard pages in React and TypeScript used by the support team.",
+  "new": "Built 6 dashboard pages in React and TypeScript, with the PostgreSQL queries behind them, used by the support team.",
+  "why": "PostgreSQL (required)", "evidence": "Profile: wrote the queries behind the dashboard pages"}]}

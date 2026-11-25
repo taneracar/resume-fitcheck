@@ -1,0 +1,6 @@
+{
+  "name": "fitcheck",
+  "description": "Evidence-checked resume matching for Claude Code",
+  "owner": {"name": "taneracar"},
+  "plugins": [{"name": "fitcheck", "source": "./", "description": "Score a resume against a job posting and propose evidence-backed edits."}]
+}

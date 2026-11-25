@@ -27,13 +27,40 @@ Also reported, without changing the score: how often each skill appears in the r
 Needs Python 3.9+ and `pdftotext` (poppler) for PDFs. DOCX, TXT and MD need nothing else.
 
 ```bash
-ln -s "$PWD/skill" ~/.claude/skills/fitcheck
+claude plugin marketplace add https://github.com/taneracar/resume-fitcheck.git
 ```
 
-Then, in Claude Code: `/fitcheck` with a resume and a posting.
+```bash
+claude plugin install fitcheck@fitcheck
+```
+
+Then, in Claude Code, run `/fitcheck:fitcheck` or ask it to check a resume against a posting.
+
+Scanning runs on your machine, but Claude reads your resume and the posting, so both go to the model you use in Claude Code. The skill can also read `~/.fitcheck/profile.json`.
+
+## Example
+
+Everything in `examples/` is fictional. `sh examples/run.sh` rebuilds [the report](examples/report.md) (75, or 85 with one backed edit) and then tries an invented edit:
+
+```
+fitcheck: edits rejected:
+  edit 1: adds "Kubernetes", which the profile says never to claim
+  edit 1: adds "Kubernetes" with no evidence in the resume or profile
+  edit 1: number 60 is not in the resume or profile
+```
+
+## Limits
+
+- Matching is on words, so a word used in another sense can match. The report shows the surrounding resume text so it can be caught.
+- English postings and resumes only for section names, degrees and dates.
+- Scanned (image-only) resumes are flagged, not read.
 
 ## Test
 
 ```bash
 python3 -m unittest discover -s tests
 ```
+
+## License
+
+MIT. Not affiliated with any ATS or resume-scanning company.

@@ -1,0 +1,3 @@
+{"edits": [{"old": "Built 6 dashboard pages in React and TypeScript used by the support team.",
+  "new": "Built 60 dashboard pages in React and deployed them on Kubernetes.",
+  "why": "Kubernetes", "evidence": "none, this one should be rejected"}]}
